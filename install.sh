@@ -2,15 +2,14 @@
 # ============================================================================
 # Developer machine onboarding — public entry point.
 # ============================================================================
-# Fresh Mac:
-#   ORG=<org> REPO=<repo> bash -c "$(curl -fsSL https://raw.githubusercontent.com/bewith-dev/onboarding/master/install.sh)"
+# Fresh Mac — one command, nothing to configure:
+#   bash -c "$(curl -fsSL https://raw.githubusercontent.com/bewith-dev/onboarding/master/install.sh)"
 #
-# Minimal and generic on purpose. It installs a standard toolchain (Xcode CLT,
-# Homebrew, gh), signs you in to YOUR GitHub account, then clones the private
-# repo named by $ORG/$REPO and hands off to its bootstrap. Anyone who runs this
-# without access to that org just gets gh + their own GitHub login; the clone
-# fails and nothing internal is revealed. Re-running is safe — every step
-# skips or repairs, never destroys.
+# It installs a standard toolchain (Xcode CLT, Homebrew, gh), signs you in to
+# YOUR GitHub account, clones bewith-dev/sandbox, and hands off to its bootstrap.
+# Anyone who runs this without access to the org just gets gh + their own GitHub
+# login; the clone fails and nothing internal is revealed. Re-running is safe —
+# every step skips or repairs, never destroys.
 # ============================================================================
 set -euo pipefail
 if [[ -e /dev/tty ]] && [[ ! -t 0 ]]; then exec </dev/tty; fi
@@ -22,10 +21,10 @@ ok()   { printf "${GREEN}✓${RESET} %s\n" "$*"; }
 warn() { printf "${YELLOW}!${RESET} %s\n" "$*"; }
 err()  { printf "${RED}✗${RESET} %s\n" "$*" >&2; exit 1; }
 
-# org / repo come from the environment (set in the one-liner you were given) or
-# you're prompted. Nothing org-specific is hardcoded in this script.
-ORG="${ORG:-}"
-REPO="${REPO:-}"
+# This entry point exists only for bewith-dev/sandbox, so the target is fixed —
+# no flags, no prompts. (SANDBOX_DIR still overrides the clone location.)
+ORG="bewith-dev"
+REPO="sandbox"
 
 printf "\n${BOLD}Developer machine onboarding${RESET}\n\n"
 
@@ -69,10 +68,7 @@ fi
 gh auth setup-git
 ok "Signed in as $(gh api user --jq .login 2>/dev/null || echo '?')"
 
-# ---- 4. Resolve org/repo (prompt if not supplied) --------------------------
-[[ -n "$ORG"  ]] || read -r -p "  GitHub org:  " ORG
-[[ -n "$REPO" ]] || read -r -p "  Repo name:   " REPO
-[[ -n "$ORG" && -n "$REPO" ]] || err "org and repo are required."
+# ---- 4. Clone target -------------------------------------------------------
 TARGET="${SANDBOX_DIR:-$HOME/workspace/$REPO}"
 
 # ---- 5. Clone (fails cleanly without access) -------------------------------
