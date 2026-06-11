@@ -14,6 +14,19 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/bewith-dev/onboarding/ma
 
 That's it. The rest is interactive and safe to re-run.
 
+## Already set up? Just the CLI
+
+If you're already a BeWith developer (Node 20+ and `gh` installed and signed in)
+and only want the `bewith` CLI — not the full machine setup — run:
+
+```sh
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/bewith-dev/onboarding/master/cli.sh)"
+```
+
+It points `~/.npmrc` at the `@bewith-dev` scope and installs/updates
+`@bewith-dev/cli` using your `gh` login (no PAT, no repo clone). Re-run anytime
+to upgrade to the latest.
+
 ## What it does
 
 1. Installs Xcode Command Line Tools (provides `git`).
@@ -24,8 +37,9 @@ That's it. The rest is interactive and safe to re-run.
 
 ## Why this repo is safe to be public
 
-This repo contains only the bootstrap entry point — `install.sh` — and this
-README. There is deliberately nothing sensitive here:
+This repo contains only the bootstrap entry points — `install.sh` (full machine
+setup) and `cli.sh` (CLI only) — and this README. There is deliberately nothing
+sensitive here:
 
 - **No secrets, tokens, or credentials.** Authentication is your own GitHub
   login via `gh`; nothing is embedded in the script.
