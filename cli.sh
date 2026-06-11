@@ -55,4 +55,17 @@ NODE_AUTH_TOKEN="$(gh auth token)" npm i -g @bewith-dev/cli@latest \
   || err "Install failed — confirm your GitHub account is in the bewith-dev org with read:packages."
 ok "bewith $(bewith --version 2>/dev/null || echo installed)"
 
-printf "\n${GREEN}${BOLD}Done.${RESET}  Try ${BOLD}bewith --help${RESET}  ·  add the Claude plugin with ${BOLD}bewith claude install${RESET}\n\n"
+# Offer the Claude plugin too — most CLI users want it. Interactive only; when
+# stdin isn't a TTY we just print the hint. The plugin stays separately
+# installable any time via `bewith claude install`.
+printf "\n"
+if [[ -t 0 ]]; then
+  read -r -p "  Install the bewith Claude Code plugin too? [Y/n] " _ans
+  if [[ -z "$_ans" || "$_ans" =~ ^[Yy] ]]; then
+    bewith claude install || warn "Plugin install didn't finish — re-run anytime: bewith claude install"
+  else
+    printf "\n  Skipped — add it anytime: ${BOLD}bewith claude install${RESET}\n"
+  fi
+fi
+
+printf "\n${GREEN}${BOLD}Done.${RESET}  ${BOLD}bewith --help${RESET}  ·  plugin: ${BOLD}bewith claude install${RESET}\n\n"
